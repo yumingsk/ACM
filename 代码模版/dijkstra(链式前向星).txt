@@ -1,0 +1,80 @@
+#include<bits/stdc++.h>
+using namespace std;
+const int maxm=10005;
+const int maxn=205;
+const int inf=2000009;
+struct node
+{
+	int v,w;
+	int next;
+}edge[maxm];
+int head[maxm];
+int cnt=0;
+int n;//节点数 
+void init()
+{
+	for(int i=0;i<=maxn;i++) head[i]=-1;
+	cnt=0;
+}
+void add(int u,int v,int w)
+{
+	edge[cnt].v=v;
+	edge[cnt].w=w;
+	edge[cnt].next=head[u];
+	head[u]=cnt++;
+}
+vector<int> dijkstra(int source)
+{
+//	cout<<"s"<<endl;
+	vector<int> dis(n+1,inf);
+	vector<int> vis(n+1,false);
+	dis[source]=0;//源点到自己为0;
+	for(int i =0;i<n-1;i++)
+	{
+		int node=-1;
+		for(int j =1;j<=n;j++)
+		{
+			if(!vis[j]&&(node==-1||dis[j]<dis[node]))
+			{
+				node =j;
+			}
+		}
+	//	cout<<"ss"<<endl;
+
+		for(int j =head[node];j!=-1;j=edge[j].next)
+		{
+			int v=edge[j].v;
+			int w=edge[j].w;
+			dis[v]=min(dis[v],dis[node]+w);
+		}
+		vis[node]=true;
+	} 
+	
+	return dis;
+}
+int main ()
+{
+	int t;
+	cin>>t;
+	while(t--)
+	{
+		init();
+		int m;
+		cin>>n>>m;
+		for(int i =1;i<=m;i++)
+		{
+			int u,v,w;
+			cin>>u>>v>>w;
+			add(u,v,w);
+			add(v,u,w);
+		}
+		vector<int> dist = dijkstra(1);
+        if(dist[n]!=inf)
+		cout<<dist[n]<<"\n";
+		else
+		{
+			cout<<-1<<"\n";
+		}
+	}
+	return 0;
+}

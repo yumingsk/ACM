@@ -1,0 +1,16 @@
+int exgcd(int a,int b,int &x,int &y)
+{
+    if(b==0)
+    {
+        x=1,y=0;
+        return a;
+    }
+    int d=exgcd(b,a%b,y,x);
+    y-=(a/b*x);
+    return d;
+}
+我们知道exgcd可以求解不定二元一次方程组问题，那么这里来说一下注意事项
+
+1.我们无法求解当系数a，b为负数的情况，所以当a和b系数为负时，需要对x和y取相反数进行等价的代还。
+
+2.求出的第一组特解可以使得等式右侧最小

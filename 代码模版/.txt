@@ -1,0 +1,4 @@
+dp(i,j) 使用了i 位 最后一位是j的数列贡献和
+do(i,j) =dp(i-1,j-1)+dp(i-1,j) +w<w=数列出现的次数*j>;
+cnt(i,j）=cnt(i-1,j-1) +cnt(i-1,j);
+

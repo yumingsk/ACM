@@ -1,0 +1,61 @@
+#include <iostream>
+#include <bits/stdc++.h>
+#define IOS ios::sync_with_stdio(false),cin.tie(0),cout.tie(0)
+
+
+using namespace std;
+const int M=2e5+10;
+const int N=2e5+10;
+const int INF=0x3f3f;
+struct edge{int v,c,w,ne;}e[M];
+int h[N],idx=1;
+int d[N],mf[N],pre[N],vis[N];
+int flow,cost;
+int S,T;
+
+void add(int a,int b,int c,int d)
+{
+    e[++idx]={b,c,d,h[a]};
+    h[a]=idx;
+}
+
+bool spfa()
+{
+    memset(d,0x3f,sizeof d);
+    memset(mf,0,sizeof mf);
+    queue<int> q; q.push(S);
+    d[S]=0,mf[S]=INF,vis[S]=1;
+    while(q.size())
+    {
+        int u=q.front();q.pop();vis[u]=0;
+        for(int i=h[u];i;i=e[i].ne)
+        {
+            int v=e[i].v,c=e[i].c,w=e[i].w;
+            if(d[v]>d[u]+w&&c)
+            {
+                d[v]=d[u]+w;//最短路
+                mf[v]=min(mf[u],c);//最大流
+                pre[v]=i;//前驱
+                if(!vis[v]){q.push(v);vis[v]=1;}
+            }
+            
+        }
+    }
+    return mf[T]>0;
+}
+void EK()
+{
+    while(spfa())
+    {
+        for(int v=T;v!=S;)
+        {
+            int i=pre[v];
+            e[i].c-=mf[T];
+            e[i^1].c+=mf[T];
+            v=e[i^1].v;
+        }//更新残留网络
+        flow+=mf[T];//累加可行流
+        cost+=mf[T]*d[T];//累加费用
+    }
+}
+

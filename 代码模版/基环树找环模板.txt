@@ -1,0 +1,15 @@
+void get_loop(int u) {
+	vis[u] = ++vs;
+	for (int i = head[u]; i; i = edge[i].next) {
+		int v = edge[i].to;
+		if (v == fa[u]) continue;
+		if (vis[v]) {
+			if (vis[v] < vis[u]) continue;
+			loop[++cnt] = v;
+			for ( ; v != u; v = fa[u]) {
+				loop[++cnt] = fa[v];
+			}
+		}
+		else fa[v] = u, get_loop(v);
+	}
+} 

@@ -1,0 +1,41 @@
+
+/*
+线性基三大性质:
+1原序列里面的任意一个数都可以由线性基里面的一些数异或得到
+2线性基里面的任意一些数异或起来都不能得到 0
+3线性基里面的数的个数唯一，并且在保持性质一的前提下，数的个数是最少的
+*/
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long
+int d[70];
+void add(ll x)
+{
+    for(int i=60;i>=0;i--)
+    {
+        if(x&(1ll<<i))//注意，如果i大于31，前面的1的后面一定要加ll
+        {
+            if(d[i])x^=d[i];
+            else
+            {
+            	cout<<i<<" "<<d[i]<<endl;
+                d[i]=x;
+                break;//插入成功就退出
+            }
+        }
+    }
+}
+int main ()
+{
+	int a[10]={10,20,9,91,29,45,32,35,15,96};
+	for(int i =0;i<10;i++)
+	{
+		add(a[i]);
+	}
+	for(int i =0;i<70;i++)
+	{
+		if(d[i])cout<<"i:"<<i<<" "<<d[i]<<"|";
+	}
+	
+	return 0;
+}

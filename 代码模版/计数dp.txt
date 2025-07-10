@@ -1,0 +1,25 @@
+F题：dp，设 f[i][j] 表示前 i 列用了长度 j 的木条，则转移就是 f[i][j] = f[i][j] + f[i-1][j-k]，最后把 f[w][0] +...+ f[w][n] 加起来再减去不符合情况的就行了。不符合情况的只有 min(h,n/w)+1 种。代码如下：
+
+ 
+ #include <bits/stdc++.h>
+ using namespace std;
+ 
+ int f[105][10005];
+ const int mod = 1e9+7;
+  
+  int main() {
+      int n, w, h;
+      scanf("%d%d%d",&n,&w,&h);
+    f[0][0] = 1;
+     for(int i = 1; i <= w; ++i)
+         for(int j = 0; j <= n; ++j)
+             for(int k = 0; k <= min(h,j); ++k)
+                 f[i][j] = (f[i][j]+f[i-1][j-k])%mod;
+ 
+    int ans = 0;
+     for(int i = 0; i <= n; ++i)
+         ans = (ans+f[w][i])%mod;
+     ans = (ans-min(h,n/w)-1+mod)%mod;
+    printf("%d\n", ans);
+     return 0;
+ }

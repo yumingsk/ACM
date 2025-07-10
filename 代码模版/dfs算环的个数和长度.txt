@@ -1,0 +1,25 @@
+void dfs( int x, int father )
+{
+    via[x] = 1; // 当前点正在走
+    for ( int i=head[x]; i!=-1; i=e[i].nxt ) {//链式前向星记录
+        int y = e[i].to;
+        if ( y==father ) {
+            continue ;
+        }
+        if ( via[y]==0 ) {//未访问，继续搜索
+            pre[y] = x; // 记录父节点
+            dfs(y,x);
+        }
+        else if ( via[y]==1 ) { // 又到了正在走的点，看到是成环的
+            int t = x;
+            int tot = 1; // 环的大小//通过pre数组逐级上去找环的长度。
+            while ( t!=y ) {
+                tot ++;
+                t = pre[t];
+            }
+            sum += tot; // 所有环的边数
+ 
+        }
+    }
+    via[x] = 2; // 当前点走完了
+}

@@ -1,0 +1,72 @@
+为了赢得最艰苦的战斗，米尔恰为他的军队想出了一个好策略。他有 n
+ 个士兵，并决定以某种方式将他们安排在营地里。每个士兵必须属于一个营地，在 x
+ 轴上的每个整数点( ⋯,−2,−1,0,1,2,⋯点)都有一个营地。
+策略由 m 个条件组成。条件 i指出士兵 ai应属于一个营地，该营地位于士兵 bi所属营地前方 di米处。(如果是 di<0，那么 ai的阵营应该在 bi的阵营后面 −di
+ 米处）。
+现在，米尔恰想知道是否存在尊重条件的士兵分区，他请求您的帮助！如果 n士兵的分区满足 m的所有条件，请回答 "是"，否则回答 "否"。
+请注意，两个不同的士兵可能被安排在同一个阵营中。
+
+#include <iostream>
+#include <bits/stdc++.h>
+#define IOS ios::sync_with_stdio(false),cin.tie(0),cout.tie(0)
+
+using namespace std;
+using ll =long long;
+const int N=4e5+10;
+ll p[N],d[N];
+ll find(ll x)
+{
+    if(x!=p[x])
+    {
+        int tmp=find(p[x]);
+        d[x]+=d[p[x]];
+        p[x]=tmp;
+        return p[x];
+    }
+    return x;
+}
+
+void solve()
+{
+    int n,m;
+    cin>>n>>m;
+    for(int i =1;i<=n;i++)
+    {
+        p[i]=i;
+        d[i]=0;
+    }
+    bool flag=true;
+    for(int i=1;i<=m;i++)
+    {
+        int a,b,dd;
+        cin>>a>>b>>dd;
+        ll fa=find(a);
+        ll fb=find(b);
+        if(fa!=fb)
+        {
+            p[fa]=fb;
+            d[fa]=dd-d[a]+d[b];
+        }
+        else if(flag && d[a]!=dd+d[b])
+        {
+            flag=false;
+            cout<<"NO\n";
+        }
+    }
+    if(flag)
+    {
+        cout<<"YES\n";
+    }
+
+}
+int main()
+{
+    IOS;
+    int t;
+    cin>>t;
+    while(t--)
+    {
+        solve();
+    }
+    return 0;
+}

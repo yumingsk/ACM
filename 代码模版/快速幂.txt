@@ -1,0 +1,11 @@
+ int quickPow(int a, int n){
+    int ans = 1;
+    while(n>0){
+        if(n&1>0)        //如果n的当前末位为1
+            ans =ans* a;  //ans乘上当前的a
+        a =a* a;        //a自乘
+        n >>= 1;       //n往右移一位,表示除以2
+    }
+    return ans;
+}
+

@@ -1,0 +1,29 @@
+//推荐稠密图
+
+void prim()
+{
+    dist[1] = 0;//把点1加入集合S，点1在集合S中，将它到集合的距离初始化为0
+    book[1] = true;//表示点1已经加入到了S集合中
+    for(int i = 2 ; i <= n ;i++)dist[i] = min(dist[i],g[1][i]);//用点1去更新dist[]
+    for(int i = 2 ; i <= n ; i++)
+    {
+        int temp = INF;//初始化距离
+        int t = -1;//接下来去寻找离集合S最近的点加入到集合中，用t记录这个点的下标。
+        for(int j = 2 ; j <= n; j++)
+        {
+            if(!book[j]&&dist[j]<temp)//如果这个点没有加入集合S，而且这个点到集合的距离小于temp就将下标赋给t
+            {
+                temp = dist[j];//更新集合V到集合S的最小值
+                t = j;//把点赋给t
+            }
+        }
+        if(t==-1){res = INF ; return ;}
+        //如果t==-1，意味着在集合V找不到边连向集合S，生成树构建失败，将res赋值正无穷表示构建失败，结束函数
+        book[t] = true;//如果找到了这个点，就把它加入集合S
+        res+=dist[t];//加上这个点到集合S的距离
+        for(int j = 2 ; j <= n ; j++)dist[j] = min(dist[j],g[t][j]);//用新加入的点更新dist[]
+    }
+}
+————————————————
+版权声明：本文为CSDN博主「skynesser」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/qq_62213124/article/details/121597780

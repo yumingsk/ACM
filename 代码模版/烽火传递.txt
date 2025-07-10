@@ -1,0 +1,44 @@
+#include <iostream>
+
+using namespace std;
+
+const int N = 200010;
+//f[i]表示前`i`座烽火台在满足条件的情况下，且点燃第i座烽火台时所需花费的最小总代价。
+int f[N]; 
+int w[N], q[N];
+
+int main()
+{
+    int n, m;
+    scanf("%d%d", &n, &m);
+    
+    for(int i = 1; i <= n; i ++) scanf("%d", &w[i]);
+    
+    f[0] = 0; //初始状态
+    
+    int hh = 0, tt = 0;
+    q[tt] = 0; //初始状态入队
+    for(int i = 1; i <= n; i ++)
+    {
+    	//从i前面的m - 1座烽火台取最值，所以窗口大小为m - 1
+        if(hh <= tt && q[hh] + m < i) hh ++;
+        
+        //状态计算
+        f[i] = f[q[hh]] + w[i];
+        
+        while(hh <= tt && f[q[tt]] >= f[i]) tt --;
+        q[++ tt] = i;
+    }
+    
+    //打擂台求出最后一段区间中的最小值
+    int res = 1e9;
+    for(int i = n - m + 1; i <= n; i ++) res = min(res, f[i]);
+    
+    cout << res << endl;
+    
+    return 0;
+}
+
+————————————————
+版权声明：本文为CSDN博主「少儿编程乔老师」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/qiaoxinwei/article/details/111311719

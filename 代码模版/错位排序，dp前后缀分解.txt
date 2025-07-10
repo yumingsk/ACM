@@ -1,0 +1,100 @@
+现在流行一种大学生互助旅游，即A去B的城市帮B上大学，帮助B上课点名，顺便在B的城市旅游。
+
+要求:
+
+    为了满足所有人外出旅游的爱好，所有人不能呆在原有的位置。即i位置上的人不能是ai；
+    由于大学上课可能会点名，所以要保证每一个人的位置都有人顶替。即每个位置上只有一个数。
+
+由于每个地点路途远近不同，学生出行的花费也有所不同。试求满足最小花费的路费。
+给定n个节点的无向图和 n−1条边，每条边有权值 w_i ,i号边连接i与 i+1 号节点。
+ 最初每个节点上有一个编号与节点编号相同的人，每次可以将一个人通过一条边移动到相邻的节点上，花费为边的权值。
+BUT,由于市场价格的影响，有时候连接 i 和i+1 边的权值会改变！！！
+有 q次询问，对于每次询问，给出一个 k 和x, 即将 k和 k+1 之间的花费变为 x.
+对于每个询问，请输出使得每个节点上有一个人，且人的编号与节点编号不同的最小花费。
+每次询问相互独立，互不干扰。
+
+#include<bits/stdc++.h>
+#include<iostream>
+using namespace std;
+#define ll long long
+int a[200005];
+const ll inf=1e9+2;
+ll dp1[200005][2];//dp1[i][0]表示从1-i位置且i位置不选的最小代价，dp1[i][1]则是选的代价
+ll dp2[200005][2];//
+inline int read()
+{
+    int x=0,f=1;
+    char ch=getchar();
+    while(ch<'0'||ch>'9')
+    {
+        if(ch=='-')
+            f=-1;
+        ch=getchar();
+    }
+    while(ch>='0' && ch<='9')
+        x=x*10+ch-'0',ch=getchar();
+    return x*f;
+}
+int main ()
+{
+
+
+	int n ;
+	n=read();
+	for(int i =1;i<=n-1;i++) cin>>a[i];
+	dp1[1][0]=inf;
+	dp1[1][1]=a[1]*2;
+	for(int i =2;i<=n-1;i++)
+	{
+		dp1[i][0]=dp1[i-1][1];
+		dp1[i][1]=min(dp1[i-1][0],dp1[i-1][1])+a[i]*2;
+	}
+	
+	dp2[n-1][0]=inf;
+	dp2[n-1][1]=2*a[n-1];
+	for(int i =n-2;i>=1;i--)
+	{
+		dp2[i][0]=dp2[i+1][1];
+		dp2[i][1]=min(dp2[i+1][0],dp2[i+1][1])+a[i]*2;
+	}
+
+	//cout<<dp1[n-1][1]<<" "<<dp2[1][1]<<endl;
+	int q;
+	q=read();
+	for(int _=1;_<=q;_++)
+	{
+		int x,k;
+		k=read();
+		x=read();
+		if(k==1) 
+		{
+			cout<<dp1[n-1][1]-2*a[1]+2*x<<"\n";
+			continue ; 
+		}
+		if(k==n-1)
+		{
+			cout<<dp2[1][1]-2*a[n-1]+2*x<<"\n";
+			continue;
+		}
+		ll ans=min(dp1[k-1][0]+dp2[k+1][0]+2*x,dp1[k-1][1]+dp2[k+1][1]);
+		for(int t=0;t<2;t++)
+		{
+			for(int tt=0;tt<2;tt++)
+			{
+				for(int ttt=0;ttt<2;ttt++)
+				{
+					if(ttt==0)
+					{
+						if(tt==0||t==0)
+						continue;
+					}
+					
+					ans=min(dp1[k-1][t]+dp2[k+1][tt]+2*x*ttt,ans);
+				}
+			}
+		}
+           cout<<ans<<"\n";
+	}
+
+   return 0;
+}

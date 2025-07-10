@@ -1,0 +1,48 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int lowbit(int x){return x&-x;}
+const int N=500005;
+int s[N];
+int n,m;
+int query(int x)
+{
+	int res=0;
+	for(int i=x;i>0;i-=lowbit(i))
+	{
+		res+=s[i];
+	}
+	return res;
+}
+void update(int x,int k)
+{
+	for(int i=x;i<=n;i+=lowbit(i))
+	{
+		s[i]+=k;
+	}
+}
+int main ()
+{
+	cin>>n>>m;
+	for(int i =1;i<=n;i++) 
+	{
+		int s;
+		cin>>s;
+		update(i,s);
+	}
+	while(m--)
+	{
+		int opt;cin>>opt;
+		int x,y;
+		cin>>x>>y;
+		if(opt==1)
+		{
+			update(x,y);
+		}
+		else
+		{
+			cout<<query(y)-query(x-1)<<"\n";
+		}
+	}
+	return 0;
+ } 

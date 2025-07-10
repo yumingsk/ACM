@@ -1,0 +1,53 @@
+//装信封（hard,hard)NAIPC 2016 C；
+
+有n种x_i*y_i的贺卡，各q_i张，需要你选取k个xx_i*yy_i信封使得装进去后损失最小，损失为xx_i*yy_i-x_i*y_i。
+1<=n,k<=15，1<=x_i,y_i,q_i<=10000。
+
+#include <bits/stdc++.h>
+ using namespace std;
+ 
+ typedef long long LL;
+ LL dp[20][1<<15], val[1<<15];
+ int p[20][3], n, k;
+ 
+ void input() {
+     scanf("%d%d", &n, &k);
+     for(int i = 0; i < n; ++i)
+         for(int j = 0; j < 3; ++j)
+            scanf("%d", &p[i][j]);                 //p[i][0]为x,p[i][1]为y,p[i][2]为q
+ }
+
+ void init() {
+     for(int i = 0; i < (1<<n); ++i) {                     //枚举2^15 ，看成二进制,0为不选，1为选，计算用一个信封将他们全部放下的最小损失，由贪心可知x，y取最大的即可。
+         LL a = -1, b = -1, c = 0, d = 0;
+         for(int j = 0; j < n; ++j)
+            if((1<<j)&i) {
+                a = max(a, (LL)p[j][0]);
+                 b = max(b, (LL)p[j][1]);
+                 c += p[j][2];
+                d += (LL)p[j][0]*p[j][2]*p[j][1];
+            }
+         val[i] = a*b*c - d;
+     }
+ }
+ 
+ void solve() {
+     memset(dp, 0x3f, sizeof(dp));
+     int a = (1<<n);
+     dp[0][0] = 0;
+     for(int i = 1; i <= k; ++i)               //枚举信封个数。
+        for(int j = 1; j < a; ++j) {
+             dp[i][j] = val[j];
+             for(int tk = j; tk; tk = (tk-1)&j)             //太神奇啦，逐位将1变成0来枚举,
+                dp[i][j] = min(dp[i][j], dp[i-1][tk]+val[j^tk]);            //j^tk则是tk的相对，没有选上的。dp[i][j]表示用i个信封，封装 j 集合的最小损失
+         }
+
+     printf("%lld\n", dp[k][a-1]);
+ }
+ 
+ int main() {
+     input();
+    init();
+   solve();
+     return 0;
+ }

@@ -1,0 +1,49 @@
+#include <iostream>
+#include <vector>
+#include <cstdio>
+#include <queue>
+#include <cstring>
+#include <algorithm>
+using namespace std;
+int in[10010];
+vector<int> v[10010];
+int main()
+{
+    int n,m;
+    scanf("%d %d",&n,&m)；
+    
+        memset(in,0,sizeof in);//清空入度
+        for(int i=0;i<=n;i++) v[i].clear();
+        for(int i=0;i<m;i++)
+        {
+            int x,y;
+            cin >>x>>y;//比如x赢了y  或者y是x的儿子 ；那么就让x指向y；
+            v[x].push_back(y);
+            in[y]++;//y的入度加1
+        }
+
+//开始拓扑.
+        priority_queue<int,vector<int>,greater<int> >q;//优先队列，设置从小到大排序，小的在队列下面
+        for(int i=0;i<n;i++)
+        {
+            if(in[i]==0)
+                q.push(i);//把入度为0的节点压入队列
+        }
+        while(!q.empty())
+        {
+            int xx=q.top();
+            q.pop();
+            n--;//每次去掉一个节点
+            for(int i=0;i<v[xx].size();i++)
+            {
+                int yy=v[xx][i];
+                in[yy]--;
+                if(!in[yy])
+                    q.push(yy);//如果去掉上一个节点之后下一个节点的入度变为0，则压入队列中
+            }
+        }
+        if(n) cout <<"NO"<<endl;//如果有环的话节点数不会为0
+        else cout <<"YES"<<endl;
+    
+    return 0;
+}

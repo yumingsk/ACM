@@ -1,0 +1,59 @@
+#include<cstdio>
+#include<cstring>
+#include<algorithm>
+#include<bits/stdc++.h>
+using namespace std;
+#define MAXN 110000
+
+int dp[MAXN*2+5];//注意数组大小
+char str[MAXN*2+5];
+int Manacher(char *s){
+    int N=0,len=strlen(s+1);
+    str[0]='$';//防止越界
+    for(int i=1;i<=len;i++){
+        str[++N]='#';
+        str[++N]=s[i];
+    }
+    str[++N]='#',str[++N]='@';//最后再加一个@
+    int right=0,pos=0;//right为右边界,在不断扩张。
+    for(int i=1;i<=N;i++){
+        if(i<right)
+            dp[i]=min(dp[2*pos-i],right-i);
+        else
+            dp[right=i]=1;
+        while(str[i-dp[i]]==str[i+dp[i]])
+            dp[i]++;
+        if(i+dp[i]>right)
+            right=i+dp[i],pos=i;
+}
+    int ret=0;
+    for(int i=1;i<=N;i++)
+        ret=max(ret,dp[i]-1);//找最长回文子串
+    return ret;
+}
+
+char S[MAXN+5];
+
+int main(){
+    while(~scanf("%s",S+1))
+        printf("%d\n",Manacher(S));
+}
+
+
+vector<int> manacher(string s)
+{
+    string t = "#";
+    for(auto c : s) t += c, t += '#';
+    int n = t.size();
+    vector<int> r(n);
+    for(int i = 0, j = 0; i < n; i ++)
+    {
+        if(2 * j - i >= 0 && j + r[j] > i)
+            r[i] = min(r[2 * j - i], j + r[j] - i);
+        while(i - r[i] >= 0 && i + r[i] < n && t[i - r[i]] == t[i + r[i]])
+            r[i] ++;
+        if(i + r[i] > j + r[j])
+            j = i;
+    }
+    return r;
+}

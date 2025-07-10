@@ -1,0 +1,123 @@
+#include <iostream>
+#include <cstring>
+#include <algorithm>
+
+using namespace std;
+
+typedef long long LL;
+
+const int N = 100010, M = 20;
+int n,m;
+struct node
+{
+	int l,r,d;
+	int sum[20];
+ } tr[N*4];
+ int w[N];
+ 
+ void pushup(int u)
+ {
+ 	for(int i=0;i<M;i++)
+ 	{
+ 		tr[u].sum[i]=tr[u<<1].sum[i]+tr[u<<1|1].sum[i];
+	 }
+	 
+ }
+ void update_node(int u,int d)
+ {
+ 	int len=tr[u].r-tr[u].l+1;
+ 	for(int i =0;i<M;i++)
+ 	{
+ 		if(d >>i &1)
+ 		{
+ 			tr[u].sum[i]=len-tr[u].sum[i];
+		 }
+	 }
+	 tr[u].d=d^tr[u].d;
+ }
+ void pushdown(int u)
+ {
+ 	int &d=tr[u].d;
+ 	if(d)
+ 	{
+ 		update_node(u<<1,d);
+ 		update_node(u<<1|1,d);
+ 		d=0;
+	 }
+ }
+ void build(int u,int l,int r)
+ {
+ 	tr[u].l=l;
+ 	tr[u].r=r;
+ 	if(l==r)
+ 	
+ 		for(int i =0;i<M;i++)
+ 		{
+ 			if(w[l]>>i&1)
+ 			{
+ 				tr[u].sum[i]=1;
+			 }
+		 }
+	 }
+	 else
+	 {
+	 	int mid=l+r >>1;
+	 	build(u<<1,l,mid),build(u<<1|1,mid+1,r);
+	 	pushup(u);
+	 }
+ 	
+ }
+ void modify(int u,int l,int r,int x)
+ {
+ 	if(tr[u].l>r||tr[u].r<l) return;
+ 	if(tr[u].l>=l&&tr[u].r<=r) update_node(u,x);
+ 	else
+ 	{
+ 		pushdown(u);
+ 		int mid=tr[u].l+tr[u].r>>1;
+ 		modify(u<<1,l,r,x);
+		modify(u<<1|1,l,r,x);
+		pushup(u); 
+	 }
+ }
+ LL query(int u,int l, int r)
+ {
+ 	if(tr[u].l>r||tr[u].r<l) return 0;
+  if (tr[u].l >= l && tr[u].r <= r)
+    {
+        LL res = 0;
+        for (int i = 0; i < M; i ++ )
+            res += (1ll << i) * tr[u].sum[i];
+        return res;
+    }
+    else
+    {
+    	pushdown(u);
+    	int mid=tr[u].l+tr[u].r >>1;
+    	LL res=0;
+		res=query(u<<1,l,r);
+		res+=query(u<<1|1,l,r);
+		return res;
+	}
+  } 
+ 
+ int main()
+{
+    scanf("%d", &n);
+    for (int i = 1; i <= n; i ++ ) scanf("%d", &w[i]);
+    build(1, 1, n);
+
+    scanf("%d", &m);
+    while (m -- )
+    {
+        int t, l, r, x;
+        scanf("%d%d%d", &t, &l, &r);
+        if (t == 1) printf("%lld\n", query(1, l, r));
+        else
+        {
+            scanf("%d", &x);
+            modify(1, l, r, x);
+        }
+    }
+    return 0;
+}

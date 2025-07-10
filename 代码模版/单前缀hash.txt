@@ -1,0 +1,10 @@
+
+inline void hash(const int l,const int r){
+	for(int i=r;i>=l;i--){
+		h[i]=h[i+1]*131+s[i];
+	}
+}
+inline void get(const int l,const int r){
+	return h[l]-h[r]*base[r-l+1];
+}
+	

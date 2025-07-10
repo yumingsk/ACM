@@ -1,0 +1,57 @@
+题意：给定一个 个点 条边的无向图 ，可以将其中任意一条边分裂成一条长度为任意的链（向边中插任意多个
+点），可以操作任意多次（也可以不操作）。问经过这样处理之后，从 号节点出发，至多走 步最多可以到多少
+个节点。
+
+
+#include<bits/stdc++.h>
+#include<iostream>
+using namespace std;
+#define ll long long 
+int main ()
+{
+	int n,m,k;
+	cin>>n>>m>>k;
+	vector<vector<int> > G(n+1);
+	for(int i =1;i<=m;i++)
+	{
+		int u,v;
+		cin>>u>>v;
+		G[u].push_back(v);
+		G[v].push_back(u);//邻接表存无向图
+	}
+	queue<int> q;//队列实现bfs
+	vector<int> dis(n+1,-1);//dis[i]记录i到根(1） 的距离
+	vector<int> par(n+1);//par[v]记录v的祖先,判断非树边的存在并计数。（par[u]==v||par[v]==u)为树边
+	vector<int> inner(n+1);//记录bfs树的节点,0为叶子节点,1为树上非叶子节点的节点。
+	
+	q.push(1);
+	dis[1]=0;
+	while(!q.empty())
+	{
+		int u=q.front();
+		q.pop();
+		for(auto v:G[u])
+		{
+			if(dis[v]!=-1) continue;
+			q.push(v);
+			dis[v]=dis[u]+1;
+			par[v]=u;
+			inner[u]=1;
+		}
+	 } 
+	 ll ans=1;
+	 for(int u=2;u<=n;u++)//遍历点.
+	 {
+	 	if(dis[u]==-1||dis[u]>k) continue;
+	 	ll cnt=0;
+	 	for(auto v:G[u])
+	 	{
+	 		if(par[u]==v||par[v]==u) continue;//非树边的计数
+	 		cnt++;
+		 }
+		 if(!inner[u]) cnt=max(cnt,1ll);//对于叶子节点，cnt至少要为1,因为自己与父亲相连的边上就可以放点。
+		 ans+=(k-dis[u])*cnt+1;//+1是本身计数。（k-dis[u)是还剩几个点可以放.
+	 }
+	 cout<<ans<<"\n";
+   return 0;
+}

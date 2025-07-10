@@ -1,0 +1,12 @@
+inline ll CRT(ll a[], ll b[], ll n)  // a是模数数组，b是余数数组，n是数组长度
+{
+    ll p = 1, x = 0;
+    for (int i = 0; i < n; ++i)
+        p *= a[i];
+    for (int i = 0; i < n; ++i)
+    {
+        ll r = p / a[i];
+        x += (b[i] * r * inv(r, a[i])) % p;
+    }
+    return x % p;
+}

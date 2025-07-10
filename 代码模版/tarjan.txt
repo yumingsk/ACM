@@ -1,0 +1,34 @@
+
+//tarjan 缩点.
+vector<int> e[N];
+int dfn[N],low[N],tot;//tot为时间戳
+int stk[N],instk[N],top;
+int scc[N],cnt;//强连通分量数组，个数
+
+void tarjan(int x)
+{
+    dfn[x]=low[x]=++tot;
+    stk[++top]=x,instk[x]=1;//x入栈,标记为1
+    for(int y:e[x])
+    {
+        if(!dfn[y])//若y未访问
+        {
+            tarjan(y);//继续深搜
+            low[x]=min(low[x],low[y]);
+        }
+        else if(instk[y]) //若y已被访问并且在栈中
+        {
+            low[x]=min(low[x],dfn[y]);
+        }
+    }
+    if(dfn[x]==low[x])//若x是强联通分量的根
+    {
+        int y;++cnt;
+        do{
+            y=stk[top--];
+            instk[y]=0;
+            scc[y]=cnt;//若点x和点y在同一的强连通分量中，则scc[x]==scc[y]。
+        }while(y!=x);//将栈中的点弹出，弹出的点都是在同一个强连通分量中。
+    }
+}
+//--------------------------------------------------

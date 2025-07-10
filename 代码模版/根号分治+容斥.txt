@@ -1,0 +1,102 @@
+#include <iostream>
+#include <bits/stdc++.h>
+using namespace std;
+using ll =long long;
+
+const  ll inf=1E9+7;
+const ll INF=1E18+7;
+const ll N=1E6+10;
+const ll mod=998244353;
+
+void add(ll &a,ll b)
+{
+  a+=b;
+  if(a>=mod) a-=mod;
+}
+void dec(ll &a,ll b)
+{
+    a-=b;
+    if(a<0) a+=mod;
+}
+
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    cout.tie(0);
+    int n;
+    cin>>n;
+    map<ll,vector <string> > mp;
+    for(int i =1;i<=n;i++){
+        string s;
+        cin>>s;
+        mp[(int)s.size()].push_back(s);
+    }
+    ll ans=0;
+    map<ll,vector<string> > ::iterator it;
+    for(it=mp.begin();it!=mp.end();it++)
+    {
+        ll len=(*it).first;
+        vector<string> s=(*it).second;
+        ll n=(int)s.size();
+        if(len<=20)
+        {
+            for(ll msk=0;msk<(1<<len);msk++)//枚举的集合是二进制串，去匹配正则表达式是否符合，符合就加一。
+            {
+                   for(ll i =0;i<n;i++)//枚举长度len的第i个正则表达式。
+                   {
+                       bool flag=true;
+                       for(int j =0;j<len;j++)
+                       {
+                        if(s[i][j]!= '?' && (s[i][j]-'0')!=(msk >> j & 1))
+                        {
+                           flag=false;
+                           break;
+                        }
+                      }
+                      if(flag)//找到了一个匹配的，加一，跳出;
+                      {
+                        add(ans,1);
+                        break;
+                      }
+                   }
+            }
+        }
+        else
+        {
+            for(ll msk=1;msk< ( 1 << n );msk++)//这里枚举的集合是串的选的情况;
+            {
+                ll cnt=1;
+                for(ll j=0;j<len;j++)//枚举位置
+                {
+                  bool f1=false,f0=false;
+                  for(ll i =0;i<n;i++)//枚举这一组里面的正则表达式
+                  {
+                     if(msk >> i & 1)//这一正则表达式被选中
+                     {
+                        if(s[i][j]=='0')f0=true;
+                        if(s[i][j]=='1')f1=true;
+                     }
+                  }
+                  if(f0&&f1)//有一位无法匹配
+                  {
+                    cnt=0;
+                    break;
+                  }
+                  if(not f0 && not f1)//这一位全是?，cnt*2
+                  {
+                    add(cnt,cnt);
+                  }
+                }
+                if(__builtin_popcount(msk) % 2)//选了奇数个
+                {
+                    add(ans,cnt);
+                }else{//偶数个
+                   dec(ans,cnt);
+                }
+            }
+        }
+    }
+    cout<<ans<<"\n";
+    return 0;
+}

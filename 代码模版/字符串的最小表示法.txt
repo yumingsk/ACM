@@ -1,0 +1,26 @@
+//字符串可以向右循环平移任意位，找到最小字典序的字符串表示法。
+int findMinRepresentation(string s) {//通过i-j两两比较，k位已经比较的位数
+    int n = s.length();
+    int i = 0, j = 1, k = 0;
+    
+    while (i < n && j < n && k < n) {
+        int diff = s[(i + k) % n] - s[(j + k) % n];
+        if (diff == 0)
+		{
+            k++;
+        } 
+		else 
+		{
+            if (diff > 0) 
+			{
+                i += k + 1;
+            } else 
+			{
+                j += k + 1;
+            }
+            if (i == j) j++;
+            k = 0;
+        }
+    }
+    return min(i, j);
+}//返回的最小索引

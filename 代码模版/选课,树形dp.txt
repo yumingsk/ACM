@@ -1,0 +1,45 @@
+#include<bits/stdc++.h>
+#include<iostream>
+using namespace std;
+#define ll long long
+ll dp[305][305];
+	int N,M;
+ll v[305];
+vector<int> e[305];
+void dfs(int u,int pre)//dp[i][j] 表示以i为根节点的子树选j个课可以获得的最大学分 
+{
+
+	for(auto v:e[u])
+	{
+		if(v==pre) continue;
+		dfs(v,u);
+		for(int j =M+1;j>=1;j--)
+		{
+			for(int k=0;k<j;k++)
+			{
+				dp[u][j]=max(dp[u][j],dp[v][k]+dp[u][j-k]);//不用担心dp[u] [j-k]选的j-k会与dp[v][k]重复，当推到这里的时候，dp[u][j]没有接触到子树v，这是一个推进的过程. 
+			}
+		}
+	}
+}
+int main ()
+{
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+
+	cin>>N>>M;
+	for(int i =1;i<=N;i++)
+	{
+		int s,k;
+		cin>>s>>k;
+		dp[i][1]=k;//以i为根节点的子树必选i位置. 
+		e[i].push_back(s);
+		e[s].push_back(i);
+			
+	}
+	dfs(0,-1);
+
+	cout<<dp[0][M+1];//0为超级源点必选. 
+	
+   return 0;
+}

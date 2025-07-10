@@ -1,0 +1,23 @@
+const int N = 1e5;
+int son[N][26], cnt[N];
+int ind = 0;
+void insert(char str[]) {
+    int p = 0;// 从根节点开始(注意：根节点不储存字符)查询
+    for(int i = 0; str[i]; i++) {
+        int c = str[i] - 'a'; // 将a - z 共26个字母对应成 0 - 25
+        if(!son[p][c]) son[p][c] = ++ind; 
+// 意味着从下标为p的父节点开始搜索时，没有找到存储了c的子节点
+//那我们便手动创建这个子节点
+        p = son[p][c]; // 将子节点下标赋给p，然后寻找下一个字符
+    }
+    cnt[p]++;
+}
+
+int query(char str[]) {
+    int p = 0;
+    for(int i = 0; str[i]; i++) {
+        int c = str[i] - 'a';
+        if(!son[p][c]) return 0; // 如果没找到，则直接返回0了
+        p = son[p][c]; // 否则就接着继续找后面的字符
+    }
+    return cnt[p];}

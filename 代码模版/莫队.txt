@@ -1,0 +1,83 @@
+莫队+19937随机数
+mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
+const int N = 1e6 + 5;
+int cur; // cur为区间中重复数字的个数
+int a[N];
+int cnt[N];
+bool ans[N];
+struct sec
+{
+    int l, r, id, blk;
+} q[N];
+int num_cnt = 0;
+void add(int x)
+{
+    if (x == 0)
+        return;
+    if (cnt[a[x]] & 1)
+        num_cnt--;
+    else
+        num_cnt++;
+    cnt[a[x]]++;
+}
+void del(int x)
+{
+    if (x == 0)
+        return;
+    cnt[a[x]]--;
+    if (cnt[a[x]] & 1)
+        num_cnt++;
+    else
+        num_cnt--;
+}
+bool cmp(sec x, sec y)
+{
+    return (x.blk < y.blk) ||
+           (x.blk == y.blk && x.r < y.r) ||
+           (x.blk == y.blk && x.r == y.r && x.l < y.l);
+}
+signed main()
+{
+    IOS;
+    int t;
+    cin >> t;
+    while (t--)
+    {
+        num_cnt = 0;
+        int n, m;
+        cin >> n >> m;
+        int siz = sqrt(n);
+        //
+        for (int i = 1; i <= n; i++)
+            cin >> a[i];
+        for (int i = 1; i <= m; i++)
+        {
+            cin >> q[i].l >> q[i].r;
+            q[i].id = i, q[i].blk = (q[i].l + siz - 1) / siz;
+        }
+        std::sort(q + 1, q + m + 1, cmp);
+        int l = 0, r = 0;
+        for (int i = 1; i <= m; i++)
+        {
+            int x = q[i].l, y = q[i].r;
+            while (l > x)
+                add(--l);
+            while (r < y)
+                add(++r);
+            while (l < x)
+                del(l++);
+            while (r > y)
+                del(r--);
+            // cout << q[i].l << ' ' << q[i].r << ' ' << num_cnt << '\n';
+            ans[q[i].id] = (num_cnt == 0);
+        }
+        for (int i = 1; i <= m; i++)
+            puts(ans[i] ? "YES" : "NO");
+        for (int i = 1; i <= n; i++)
+        {
+            cnt[a[i]] = 0;
+        }	
+    }
+}
+
+

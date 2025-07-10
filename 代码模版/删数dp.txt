@@ -1,0 +1,35 @@
+#include<bits/stdc++.h>
+#include<iostream>
+using namespace std;
+
+int main ()
+{
+	 ios::sync_with_stdio(false), cin.tie(nullptr);
+    int T;
+    cin >> T;
+    while (T--) {
+        const int N = 200000 + 5;
+        int n, a[N], dp[N], buc[N];
+        cin >> n;
+        dp[0] = 0;
+        for (int i = 1; i <= n; i++) buc[i] = 0x3f3f3f3f;
+       for(int i =1;i<=n;i++)
+       {
+       	cin>>a[i];
+       	
+	   }  
+	   for(int i =1;i<=n;i++)	
+	   {  
+	   
+	   dp[i]=min(dp[i-1]+1,buc[a[i]]);
+	   
+	   buc[a[i]]=min(buc[a[i]],dp[i-1]);
+	   
+	   }
+	 //dp[i]表示考虑1-i的子数组，留下的最少的个数.
+	 //buc[i]表示 考虑删除 值 i 的 的最小的留下的个数. 
+	   cout << n - dp[n] << '\n';
+        }
+        
+   return 0;
+}

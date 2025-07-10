@@ -1,0 +1,79 @@
+
+有一只可爱的兔子被困在了密室了，密室里有两个数字，还有一行字：
+只有解开密码，才能够出去。
+可爱的兔子摸索了好久，发现密室里的两个数字是表示的是一个区间[L,R]
+而密码是这个区间中任意选择两个(可以相同的)整数后异或的最大值。
+比如给了区间[2,5] 那么就有2 3 4 5这些数，其中 2 xor 5=7最大 所以密码就是7。
+兔子立马解开了密室的门，发现门外还是一个门，而且数字越来越大，兔子没有办法了，所以来求助你。
+提示：异或指在二进制下一位位比较，相同则 0 不同则 1
+例如2=(010)22=(010)2​ 5=(101)25=(101)2​
+所以2 xor 5=(111)2=75=(111)2​=7
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+	
+#include<iostream>
+#include<algorithm>
+#include<cstring>
+#include<string>
+#include<vector>
+#include<stack>
+ 
+using namespace std;
+ 
+ 
+ 
+inline long long read(){
+    long long x=0,w=1;char ch=getchar();
+    while(ch!='-' && (ch<'0' || ch>'9')) ch=getchar();
+    if(ch=='-') w = -1;
+    while(ch>='0' && ch<='9') x = x*10 + ch-'0', ch = getchar();
+    return x*w;
+}
+ 
+ 
+int main(){
+    long long T=read();
+    long long L,R;
+    while(T--){
+        L=read(),R=read();
+        long long temp=L^R,ans=1;
+        while(temp){
+            temp>>=1;
+            ans<<=1;
+        }
+        printf("%lld\n",ans-1);
+    }
+    return 0;
+}
